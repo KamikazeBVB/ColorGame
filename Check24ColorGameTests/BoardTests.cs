@@ -46,6 +46,18 @@ namespace Check24ColorGameTests
             var initialState = new int[2, 2];
             initialState[1, 1] = 1;
 
+            var board = new Board(initialState, 2);
+
+            CollectionAssert.AreEqual(initialState, board.BoardState);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(System.ArgumentException))]
+        public void InitilizeBoardWithInvalidColor()
+        {
+            var initialState = new int[2, 2];
+            initialState[1, 1] = 4;
+
             var board = new Board(initialState, 3);
 
             CollectionAssert.AreEqual(initialState, board.BoardState);
@@ -62,34 +74,6 @@ namespace Check24ColorGameTests
             var legalMoves = board.GenerateValidMoves().ToList();
 
             var expectedMove = new Move(1, 1);
-
-            Assert.AreEqual(1, legalMoves.Count);
-            Assert.AreEqual(0, legalMoves[0].CompareTo(expectedMove));
-        }
-
-        [TestMethod]
-        public void GenerateMovesForTwoByTwoBoardOnColumn()
-        {
-            int[,] boardState = new int[2, 2] { { 1,1 }, {0, 1} };
-            var board = new Board(boardState, 2);
-
-            var legalMoves = board.GenerateValidMoves().ToList();
-
-            var expectedMove = new Move(0, 2);
-
-            Assert.AreEqual(1, legalMoves.Count);
-            Assert.AreEqual(0, legalMoves[0].CompareTo(expectedMove));
-        }
-
-        [TestMethod]
-        public void GenerateMovesForTwoByTwoBoardOnRow()
-        {
-            int[,] boardState = new int[2, 2] { { 0, 0 }, { 1, 0 } };
-            var board = new Board(boardState, 2);
-
-            var legalMoves = board.GenerateValidMoves().ToList();
-
-            var expectedMove = new Move(1, 2);
 
             Assert.AreEqual(1, legalMoves.Count);
             Assert.AreEqual(0, legalMoves[0].CompareTo(expectedMove));
@@ -118,7 +102,7 @@ namespace Check24ColorGameTests
             var initialState = new int[2, 2];
             initialState[1, 1] = 1;
 
-            var board = new Board(initialState, 3);
+            var board = new Board(initialState, 2);
 
             Assert.AreEqual(false, board.IsGameOver());
         }
@@ -128,7 +112,7 @@ namespace Check24ColorGameTests
         {
             var initialState = new int[2, 2];
 
-            var board = new Board(initialState, 3);
+            var board = new Board(initialState, 2);
 
             Assert.AreEqual(true, board.IsGameOver());
         }

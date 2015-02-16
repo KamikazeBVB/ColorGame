@@ -46,26 +46,48 @@ namespace Check24ColorGame
         {
             if (boardState == null || boardState.GetLength(0) != boardState.GetLength(1) || boardState.GetLength(0) < 1)
                 throw new ArgumentException("The board must contain n*n tiles and needs to contain at least one tile!");
+
+            for(int row = 0; row < boardState.GetLength(0); row++)
+            {
+                for (int col = 0; col < boardState.GetLength(0); col++)
+                {
+                    int currentColor = boardState[row, col];
+                    if(currentColor > validColorCount)
+                        throw new ArgumentException(string.Format("Invalid color found at position ({0},{1})!", row, col));
+                   
+                }
+            }
+            
             this.ValidColors = validColorCount;
             this.BoardSize = boardState.GetLength(0);
             this._boardState = (int[,])boardState.Clone();
         }
 
-        private bool CanGoDown(Coordinates coord, int currentColor, bool[,] visitedSites)
+        private bool CanGoInDirection(Coordinates coord, int originColor, int nextColor, bool[,] visitedSites, Direction direction)
         {
-            return coord.Row + 1 < this.BoardSize
-                && this._boardState[coord.Row + 1, coord.Column] == currentColor
-                && !visitedSites[coord.Row + 1, coord.Column];
+            Coordinates trialCoord = null;
+            switch (direction)
+            {
+                case Direction.Down:
+                    trialCoord = new Coordinates(coord.Row + 1, coord.Column);
+                    break;
+
+                case Direction.Right:
+                    trialCoord = new Coordinates(coord.Row, coord.Column + 1);
+                    break;
+
+                default:
+                    throw new ArgumentException("Illegal direction move generation method!");
+            }
+
+            return trialCoord.Row < this.BoardSize
+                 && trialCoord.Column < this.BoardSize
+                 && (this._boardState[trialCoord.Row, trialCoord.Column] == originColor 
+                    || this._boardState[trialCoord.Row, trialCoord.Column] == nextColor)
+                 && !visitedSites[trialCoord.Row, trialCoord.Column];
         }
 
-        private bool CanGoRight(Coordinates coord, int currentColor, bool[,] visitedSites)
-        {
-            return coord.Column + 1 < this.BoardSize
-                 && this._boardState[coord.Row, coord.Column + 1] == currentColor
-                 && !visitedSites[coord.Row, coord.Column + 1];
-        }
-
-        private int CalculateMoveScore(int moveColor)
+        private int CalculateMoveScore(int originalColor, int moveColor)
         {
             Stack<Coordinates> coordinateStack = new Stack<Coordinates>();
 
@@ -77,18 +99,18 @@ namespace Check24ColorGame
             while (coordinateStack.Count > 0)
             {
                 var currentPosition = coordinateStack.Pop();
-
-                if (CanGoDown(currentPosition, moveColor, visitedSites))
+                Coordinates newCoord;
+                if (CanGoInDirection(currentPosition, originalColor, moveColor, visitedSites, Direction.Down))
                 {
-                    var newCoord = new Coordinates(currentPosition.Row + 1, currentPosition.Column);
+                    newCoord = new Coordinates(currentPosition.Row + 1, currentPosition.Column);
                     coordinateStack.Push(newCoord);
                     visitedSites[newCoord.Row, newCoord.Column] = true;
                     result++;
                 }
 
-                if (CanGoRight(currentPosition, moveColor, visitedSites))
+                if (CanGoInDirection(currentPosition, originalColor, moveColor, visitedSites, Direction.Right))
                 {
-                    var newCoord = new Coordinates(currentPosition.Row, currentPosition.Column + 1);
+                    newCoord = new Coordinates(currentPosition.Row, currentPosition.Column + 1);
                     coordinateStack.Push(newCoord);
                     visitedSites[newCoord.Row, newCoord.Column] = true;
                     result++;
@@ -140,14 +162,14 @@ namespace Check24ColorGame
 
             var result = new List<Move>();
 
-            for (int currentCollor = 0; currentCollor < this.ValidColors; currentCollor++)
+            for (int nextColor = 0; nextColor < this.ValidColors; nextColor++)
             {
-                if (currentCollor == originColor)
+                if (nextColor == originColor)
                     continue;
 
-                int moveScore = this.CalculateMoveScore(currentCollor);
+                int moveScore = this.CalculateMoveScore(originColor, nextColor);
 
-                result.Add(new Move(currentCollor, moveScore));
+                result.Add(new Move(nextColor, moveScore));
             }
 
             return result;
