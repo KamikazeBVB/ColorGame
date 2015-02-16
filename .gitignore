@@ -1,0 +1,9 @@
+*.pdb
+*.exe
+*.dll
+*.cache
+*.config
+*.txt
+/TestResults/*.ldf
+*.mdf
+/Check24ColorGame/bin/Debug/*.manifest
