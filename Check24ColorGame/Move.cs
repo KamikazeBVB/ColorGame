@@ -18,17 +18,22 @@ namespace Check24ColorGame
 
         public Dictionary<string, Coordinates> Border { get; private set; }
 
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
         public override bool Equals(object obj)
         {
             if (obj is Move)
             {
                 var other = obj as Move;
-                if (other != null)
+                if (other != null 
+                        && this.Color == other.Color
+                        && this.Border.Count == other.Border.Count)
                 {
                     var discriminatingItem = this.Border.FirstOrDefault(item => !other.Border.ContainsKey(item.Key));
-
-                    return this.Color == other.Color
-                        && discriminatingItem.Equals(default(KeyValuePair<string, Coordinates>));
+                    return discriminatingItem.Equals(default(KeyValuePair<string, Coordinates>));
                 }
             }
             return false;

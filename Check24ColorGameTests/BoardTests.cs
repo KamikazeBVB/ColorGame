@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Check24ColorGame;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Check24ColorGameTests
 {
@@ -88,22 +89,87 @@ namespace Check24ColorGameTests
         }
 
         [TestMethod]
-        public void GenerateMovesForComplexBoard()
+        public void GenerateMovesForComplexBoardValid()
         {
-            //TO DO Finish implementation.
-            /*
             int[,] boardState = new int[4, 4] 
-            { { 2, 0, 0, 0}, 
+            { { 1, 0, 0, 0}, 
               { 0, 0, 0, 0 },
               { 0, 0, 0, 0 },
               { 0, 0, 1, 0 } 
             };
-            var board = new Board(boardState, 3);
+            var board = new Board(boardState, 2);
 
             var legalMoves = board.GenerateValidMoves().ToList();
 
-            Assert.AreEqual(2, legalMoves.Count);
-             */
+            var boarder = new Dictionary<string, Coordinates>();
+
+            for(int row = 0; row < 4; row++)
+                for (int col = 0; col < 4; col++)
+                {
+                    var coord = new Coordinates(row,col);
+                    boarder.Add(coord.Key, coord);
+                }
+
+            boarder.Remove("3_2");
+
+            var expectedMove = new Move(0, boarder);
+
+            Assert.AreEqual(1, legalMoves.Count);
+            Assert.AreEqual(true, legalMoves[0].Equals(expectedMove));
+        }
+
+        [TestMethod]
+        public void GenerateMovesForComplexBoardInvalid()
+        {
+            int[,] boardState = new int[4, 4] 
+            { { 1, 0, 0, 0}, 
+              { 0, 0, 0, 0 },
+              { 0, 0, 0, 0 },
+              { 0, 0, 1, 0 } 
+            };
+            var board = new Board(boardState, 2);
+
+            var legalMoves = board.GenerateValidMoves().ToList();
+
+            var boarder = new Dictionary<string, Coordinates>();
+
+            for (int row = 0; row < 4; row++)
+                for (int col = 0; col < 4; col++)
+                {
+                    var coord = new Coordinates(row, col);
+                    boarder.Add(coord.Key, coord);
+                }
+
+            var expectedMove = new Move(0, boarder);
+
+            Assert.AreEqual(1, legalMoves.Count);
+            Assert.AreEqual(false, legalMoves[0].Equals(expectedMove));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(System.ArgumentException))]
+        public void TryToMakeInvalidMove()
+        {
+            int[,] boardState = new int[4, 4] 
+            { { 1, 0, 0, 0}, 
+              { 0, 0, 0, 0 },
+              { 0, 0, 0, 0 },
+              { 0, 0, 1, 0 } 
+            };
+            var board = new Board(boardState, 2);
+
+            var boarder = new Dictionary<string, Coordinates>();
+
+            for (int row = 0; row < 4; row++)
+                for (int col = 0; col < 4; col++)
+                {
+                    var coord = new Coordinates(row, col);
+                    boarder.Add(coord.Key, coord);
+                }
+
+            var badMove = new Move(0, boarder);
+
+            board.MakeMove(badMove);
         }
         
         #endregion
