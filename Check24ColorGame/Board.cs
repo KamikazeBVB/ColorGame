@@ -84,9 +84,6 @@ namespace Check24ColorGame
                     throw new ArgumentException("Illegal direction move generation method!");
             }
 
-            if (trialCoord.Column == 2 && trialCoord.Row == 3)
-                Console.Write("bla");
-
             if (trialCoord.Row < this.BoardSize
                  && trialCoord.Column < this.BoardSize
                  && this._boardState[trialCoord.Row, trialCoord.Column] == nextColor
