@@ -8,21 +8,11 @@ namespace Check24ColorGame
 {
     public sealed class Board
     {
-        private class Coordinates
-        {
-            public Coordinates(int row, int column)
-            {
-                this.Row = row;
-                this.Column = column;
-            }
-
-            public int Row { get; set; }
-            public int Column { get; set; }
-        }
-
+       
         private int[,] _boardState;
         private int _boardSize;
         private int _validColorsCount;
+        private Dictionary<string, Coordinates> _currentBorder;
 
         public Board(int boardSize, int validColorCount)
         {
@@ -40,6 +30,8 @@ namespace Check24ColorGame
                     _boardState[row, col] = rand.Next(validColorCount);
                 }
             }
+
+            InitializeCurrentBorder();
         }
 
         public Board(int[,] boardState, int validColorCount)
@@ -61,9 +53,21 @@ namespace Check24ColorGame
             this.ValidColors = validColorCount;
             this.BoardSize = boardState.GetLength(0);
             this._boardState = (int[,])boardState.Clone();
+
+            InitializeCurrentBorder();
         }
 
-        private bool CanGoInDirection(Coordinates coord, int originColor, int nextColor, bool[,] visitedSites, Direction direction)
+        private void InitializeCurrentBorder()
+        {
+            Coordinates origin = new Coordinates(0,0);
+            this._currentBorder = new Dictionary<string, Coordinates> 
+            {
+                {origin.Key, origin}
+            };
+            this._currentBorder = CalculateBorderExtension(this._boardState[0, 0]);
+        }
+
+        private Coordinates TryToExtendInDirection(Coordinates coord, int nextColor, Dictionary<string,Coordinates> currentBorder, Direction direction)
         {
             Coordinates trialCoord = null;
             switch (direction)
@@ -80,41 +84,38 @@ namespace Check24ColorGame
                     throw new ArgumentException("Illegal direction move generation method!");
             }
 
-            return trialCoord.Row < this.BoardSize
+            if( trialCoord.Row < this.BoardSize
                  && trialCoord.Column < this.BoardSize
-                 && (this._boardState[trialCoord.Row, trialCoord.Column] == originColor 
-                    || this._boardState[trialCoord.Row, trialCoord.Column] == nextColor)
-                 && !visitedSites[trialCoord.Row, trialCoord.Column];
+                 && this._boardState[trialCoord.Row, trialCoord.Column] == nextColor
+                 && !currentBorder.ContainsKey(trialCoord.Key))
+            {
+                currentBorder.Add(trialCoord.Key, trialCoord);
+                return trialCoord;
+            }
+
+            return null;
         }
 
-        private int CalculateMoveScore(int originalColor, int moveColor)
+        private Dictionary<string,Coordinates> CalculateBorderExtension(int moveColor)
         {
             Stack<Coordinates> coordinateStack = new Stack<Coordinates>();
+            
+            this._currentBorder.Values.ToList().ForEach(item => coordinateStack.Push(item));
 
-            coordinateStack.Push(new Coordinates(0, 0));
+            var result = coordinateStack.ToDictionary(item=>item.Key, item=>item);
 
-            bool[,] visitedSites = new bool[this.BoardSize, this.BoardSize];
-
-            int result = 1;
             while (coordinateStack.Count > 0)
             {
                 var currentPosition = coordinateStack.Pop();
-                Coordinates newCoord;
-                if (CanGoInDirection(currentPosition, originalColor, moveColor, visitedSites, Direction.Down))
-                {
-                    newCoord = new Coordinates(currentPosition.Row + 1, currentPosition.Column);
+                Coordinates newCoord = TryToExtendInDirection(currentPosition, moveColor, result, Direction.Down);
+                
+                if(newCoord!=null)
                     coordinateStack.Push(newCoord);
-                    visitedSites[newCoord.Row, newCoord.Column] = true;
-                    result++;
-                }
 
-                if (CanGoInDirection(currentPosition, originalColor, moveColor, visitedSites, Direction.Right))
-                {
-                    newCoord = new Coordinates(currentPosition.Row, currentPosition.Column + 1);
+                newCoord = TryToExtendInDirection(currentPosition, moveColor, result, Direction.Right);
+                
+                if(newCoord != null)
                     coordinateStack.Push(newCoord);
-                    visitedSites[newCoord.Row, newCoord.Column] = true;
-                    result++;
-                }
             }
 
             return result;
@@ -167,9 +168,9 @@ namespace Check24ColorGame
                 if (nextColor == originColor)
                     continue;
 
-                int moveScore = this.CalculateMoveScore(originColor, nextColor);
+                var moveBorder = this.CalculateBorderExtension(nextColor);
 
-                result.Add(new Move(nextColor, moveScore));
+                result.Add(new Move(nextColor, moveBorder));
             }
 
             return result;

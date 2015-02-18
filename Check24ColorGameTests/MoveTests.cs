@@ -1,6 +1,7 @@
 ﻿using System;
 using Check24ColorGame;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 
 namespace Check24ColorGameTests
 {
@@ -8,22 +9,7 @@ namespace Check24ColorGameTests
     public class MoveTests
     {
         #region Constructor tests
-        [TestMethod]
-        public void TestMoveColorConstructor()
-        {
-            var move = new Move(3);
 
-            Assert.AreEqual(3,move.MoveColor);
-        }
-
-        [TestMethod]
-        public void TestMoveColorAndMoveScoreConstructor()
-        {
-            var move = new Move(3,2);
-
-            Assert.AreEqual(3, move.MoveColor);
-            Assert.AreEqual(2, move.MoveScore);
-        }
 
         #endregion
 
@@ -31,19 +17,42 @@ namespace Check24ColorGameTests
         [TestMethod]
         public void TestMoveEquality()
         {
-            var move = new Move(3, 2);
+            var coord1= new Coordinates(0,0);
+            var coord2= new Coordinates(1,0);
 
-            Assert.AreEqual(0, move.CompareTo(new Move(3,2)));
+            var border = new Dictionary<string,Coordinates>
+            {
+               {coord1.Key, coord1},
+               {coord2.Key, coord2}
+            };
 
+            var move1 = new Move(0, border);
+            var move2 = new Move(0, border);
+
+            Assert.AreEqual(true, move1.Equals(move2));
         }
 
         [TestMethod]
         public void TestMoveInequality()
         {
-            var move = new Move(3, 2);
+            var coord1 = new Coordinates(0, 0);
+            var coord2 = new Coordinates(1, 0);
 
-            Assert.AreEqual(1, move.CompareTo(new Move(3,1)));
+            var border = new Dictionary<string, Coordinates>
+            {
+               {coord1.Key, coord1},
+               {coord2.Key, coord2}
+            };
 
+            var border2 = new Dictionary<string, Coordinates>
+            {
+               {coord1.Key, coord1},
+            };
+
+            var move1 = new Move(0, border);
+            var move2 = new Move(0, border2);
+
+            Assert.AreEqual(false, move1.Equals(move2));
         }
         #endregion
     }

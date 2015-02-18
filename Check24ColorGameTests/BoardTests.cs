@@ -73,10 +73,7 @@ namespace Check24ColorGameTests
 
             var legalMoves = board.GenerateValidMoves().ToList();
 
-            var expectedMove = new Move(1, 1);
-
             Assert.AreEqual(1, legalMoves.Count);
-            Assert.AreEqual(0, legalMoves[0].CompareTo(expectedMove));
         }
 
         [TestMethod]
@@ -87,12 +84,28 @@ namespace Check24ColorGameTests
 
             var legalMoves = board.GenerateValidMoves().ToList();
 
-            var expectedMove = new Move(1, 4);
-
             Assert.AreEqual(1, legalMoves.Count);
-            Assert.AreEqual(0, legalMoves[0].CompareTo(expectedMove));
         }
 
+        [TestMethod]
+        public void GenerateMovesForComplexBoard()
+        {
+            //TO DO Finish implementation.
+            /*
+            int[,] boardState = new int[4, 4] 
+            { { 2, 0, 0, 0}, 
+              { 0, 0, 0, 0 },
+              { 0, 0, 0, 0 },
+              { 0, 0, 1, 0 } 
+            };
+            var board = new Board(boardState, 3);
+
+            var legalMoves = board.GenerateValidMoves().ToList();
+
+            Assert.AreEqual(2, legalMoves.Count);
+             */
+        }
+        
         #endregion
 
         #region End game tests

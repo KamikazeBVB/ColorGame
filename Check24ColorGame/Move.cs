@@ -6,26 +6,32 @@ using System.Threading.Tasks;
 
 namespace Check24ColorGame
 {
-    public sealed class Move : IComparable<Move>
+    public sealed class Move
     {
-        public Move(int moveColor)
+        public Move(int moveColor, Dictionary<string, Coordinates> border)
         {
-            this.MoveColor = moveColor;
+            this.Color = moveColor;
+            this.Border = border;
         }
 
-        public Move(int moveColor, int moveScore)
+        public int Color { get; private set; }
+
+        public Dictionary<string, Coordinates> Border { get; private set; }
+
+        public override bool Equals(object obj)
         {
-            this.MoveColor = moveColor;
-            this.MoveScore = moveScore;
-        }
+            if (obj is Move)
+            {
+                var other = obj as Move;
+                if (other != null)
+                {
+                    var discriminatingItem = this.Border.FirstOrDefault(item => !other.Border.ContainsKey(item.Key));
 
-        public int MoveColor { get; private set; }
-
-        public int MoveScore { get; set; }
-
-        public int CompareTo(Move other)
-        {
-            return this.MoveColor == other.MoveColor && this.MoveScore == other.MoveScore ? 0 : 1;
+                    return this.Color == other.Color
+                        && discriminatingItem.Equals(default(KeyValuePair<string, Coordinates>));
+                }
+            }
+            return false;
         }
     }
 }
