@@ -8,7 +8,7 @@ namespace Check24ColorGame
 {
     public sealed class Check24GreedyPlayer : Check24Player
     {
-        public Check24GreedyPlayer(Board game)
+        public Check24GreedyPlayer(IBoard game)
             : base(game)
         {
 

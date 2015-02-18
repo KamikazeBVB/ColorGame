@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Check24ColorGame
 {
-    public sealed class Board
+    public sealed class Board : Check24ColorGame.IBoard
     {
 
         private int[,] _boardState;

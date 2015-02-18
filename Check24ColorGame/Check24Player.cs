@@ -8,9 +8,9 @@ namespace Check24ColorGame
 {
     public abstract class Check24Player
     {
-        protected Board _game;
+        protected IBoard _game;
 
-        public Check24Player(Board game)
+        public Check24Player(IBoard game)
         {
             this._game = game;
         }

@@ -45,6 +45,7 @@
     <Compile Include="Check24GreedyPlayer.cs" />
     <Compile Include="Coordinates.cs" />
     <Compile Include="Direction.cs" />
+    <Compile Include="IBoard.cs" />
     <Compile Include="Move.cs" />
     <Compile Include="Check24Player.cs" />
     <Compile Include="Program.cs" />
