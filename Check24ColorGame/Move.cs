@@ -6,37 +6,42 @@ using System.Threading.Tasks;
 
 namespace Check24ColorGame
 {
-    public sealed class Move
+    public sealed class Move : IEquatable<Move>
     {
+        private Dictionary<string, Coordinates> _border;
+
         public Move(int moveColor, Dictionary<string, Coordinates> border)
         {
             this.Color = moveColor;
-            this.Border = border;
+            this._border = border;
         }
 
         public int Color { get; private set; }
 
-        public Dictionary<string, Coordinates> Border { get; private set; }
-
-        public override int GetHashCode()
+        public Dictionary<string, Coordinates> Border 
         {
-            return base.GetHashCode();
+            get
+            {
+                Dictionary<string, Coordinates> result = new Dictionary<string, Coordinates>();
+
+                this._border.Values.ToList().ForEach(item => result.Add(item.Key, new Coordinates(item.Row, item.Column)));
+
+                return result;
+            }
+          
         }
 
-        public override bool Equals(object obj)
+        public bool Equals(Move other)
         {
-            if (obj is Move)
+            if (this.Color == other.Color
+                     && this.Border.Count == other.Border.Count)
             {
-                var other = obj as Move;
-                if (other != null 
-                        && this.Color == other.Color
-                        && this.Border.Count == other.Border.Count)
-                {
-                    var discriminatingItem = this.Border.FirstOrDefault(item => !other.Border.ContainsKey(item.Key));
-                    return discriminatingItem.Equals(default(KeyValuePair<string, Coordinates>));
-                }
+                var discriminatingItem = this.Border.FirstOrDefault(item => !other.Border.ContainsKey(item.Key));
+                return discriminatingItem.Equals(default(KeyValuePair<string, Coordinates>));
             }
             return false;
         }
+
     }
 }
+
