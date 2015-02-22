@@ -78,5 +78,27 @@ namespace Check24ColorGameTests.Mocks
         {
             this._moveIndex++;
         }
+
+
+        public int BoardSize
+        {
+            get { return 0; }
+        }
+
+
+        public int[,] BoardState
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public int ValidColors
+        {
+            get { return 2; }
+        }
+
+        public int BoderSize
+        {
+            get { return 4; }
+        }
     }
 }

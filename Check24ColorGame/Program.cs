@@ -10,8 +10,6 @@ namespace Check24ColorGame
     {
         static void Main(string[] args)
         {
-          
-
 
         }
     }

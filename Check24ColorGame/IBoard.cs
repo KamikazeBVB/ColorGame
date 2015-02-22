@@ -7,5 +7,9 @@ namespace Check24ColorGame
         IEnumerable<Move> GenerateValidMoves();
         bool IsGameOver();
         void MakeMove(Move move);
+        int BoardSize { get; }
+        int[,] BoardState { get; }
+        int ValidColors { get; }
+        int BoderSize { get; }
     }
 }

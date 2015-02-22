@@ -221,5 +221,23 @@ namespace Check24ColorGame
             return true;
         }
 
+        public int BoderSize
+        {
+            get { return this._currentBorder.Count; }
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+
+            for (int row = 0; row < this.BoardSize; row++)
+                for (int col = 0; col < this.BoardSize; col++)
+                {
+                    sb.Append(this._boardState[row, col]);
+                    sb.Append(' ');
+                }
+
+            return sb.Remove(sb.Length - 1, 1).ToString();
+        }
     }
 }

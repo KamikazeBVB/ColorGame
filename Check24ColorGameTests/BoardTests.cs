@@ -103,10 +103,10 @@ namespace Check24ColorGameTests
 
             var boarder = new Dictionary<string, Coordinates>();
 
-            for(int row = 0; row < 4; row++)
+            for (int row = 0; row < 4; row++)
                 for (int col = 0; col < 4; col++)
                 {
-                    var coord = new Coordinates(row,col);
+                    var coord = new Coordinates(row, col);
                     boarder.Add(coord.Key, coord);
                 }
 
@@ -115,7 +115,7 @@ namespace Check24ColorGameTests
             var expectedMove = new Move(0, boarder);
 
             Assert.AreEqual(1, legalMoves.Count);
-            Assert.AreEqual(true, legalMoves[0].Equals(expectedMove));
+            Assert.IsTrue(legalMoves[0].Equals(expectedMove));
         }
 
         [TestMethod]
@@ -143,7 +143,7 @@ namespace Check24ColorGameTests
             var expectedMove = new Move(0, boarder);
 
             Assert.AreEqual(1, legalMoves.Count);
-            Assert.AreEqual(false, legalMoves[0].Equals(expectedMove));
+            Assert.IsFalse(legalMoves[0].Equals(expectedMove));
         }
 
         [TestMethod]
@@ -171,7 +171,7 @@ namespace Check24ColorGameTests
 
             board.MakeMove(badMove);
         }
-        
+
         #endregion
 
         #region End game tests
@@ -183,7 +183,7 @@ namespace Check24ColorGameTests
 
             var board = new Board(initialState, 2);
 
-            Assert.AreEqual(false, board.IsGameOver());
+            Assert.IsFalse(board.IsGameOver());
         }
 
         [TestMethod]
@@ -193,7 +193,7 @@ namespace Check24ColorGameTests
 
             var board = new Board(initialState, 2);
 
-            Assert.AreEqual(true, board.IsGameOver());
+            Assert.IsTrue(board.IsGameOver());
         }
         #endregion
     }

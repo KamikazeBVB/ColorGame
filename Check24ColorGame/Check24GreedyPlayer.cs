@@ -13,15 +13,11 @@ namespace Check24ColorGame
         {
 
         }
-        public override string Name
-        {
-            get { return "Greedy"; }
-        }
-
-        protected override Move ChooseMove(IEnumerable<Move> availableMoves)
+       
+        private Move ChooseMove(IEnumerable<Move> availableMoves)
         {
             Move result;
-           
+
             int maxBorderExtension = availableMoves.Max(item => item.Border.Count);
 
             var movesWithMaximumBorderExtension = availableMoves.Where(item => item.Border.Count == maxBorderExtension).ToList();
@@ -37,5 +33,29 @@ namespace Check24ColorGame
             }
             return result;
         }
+
+        public override string Name
+        {
+            get { return "Greedy"; }
+        }
+
+        public override IEnumerable<Move> GetStrategy()
+        {
+            var strategy = new List<Move>();
+
+            while (!this._game.IsGameOver())
+            {
+                var availableMoves = this._game.GenerateValidMoves();
+
+                var moveToMake = this.ChooseMove(availableMoves);
+
+                this._game.MakeMove(moveToMake);
+
+                strategy.Add(moveToMake);
+            }
+
+            return strategy;
+        }
+
     }
 }

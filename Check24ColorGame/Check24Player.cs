@@ -17,26 +17,8 @@ namespace Check24ColorGame
         
         public abstract string Name { get; }
 
-        public IEnumerable<Move> GetStrategy()
-        {
-            var strategy = new List<Move>();
+        public abstract IEnumerable<Move> GetStrategy();
 
-            while (!this._game.IsGameOver())
-            {
-                var availableMoves = this._game.GenerateValidMoves();
-
-                var moveToMake = this.ChooseMove(availableMoves);
-               
-                this._game.MakeMove(moveToMake);
-
-                strategy.Add(moveToMake);
-            }
-
-            return strategy;
-        }
-
-        protected abstract Move ChooseMove(IEnumerable<Move> availableMoves);
-        
         public override string ToString()
         {
             return string.Format("I'm the {0} player", this.Name);
